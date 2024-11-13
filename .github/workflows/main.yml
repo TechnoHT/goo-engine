@@ -37,7 +37,7 @@ jobs:
       - name: Download Blender libraries
         run: |
           cd blender
-          echo y | make update
+          python ./build_files/utils/make_update.py --no-confirm
         shell: cmd
         
       - name: Compile Blender
