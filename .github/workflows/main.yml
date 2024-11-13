@@ -11,45 +11,46 @@ on:
   pull_request:
 
 jobs:
-  build_blender:
-    name: Build Blender
-    runs-on: ubuntu-latest
+  build:
+    runs-on: windows-latest
+
     steps:
-      - name: Checkout Blender sources from GitHub
-        uses: actions/checkout@v2
+      - name: Checkout Blender source
+        uses: actions/checkout@v4
         with:
-          repository: "TechnoHT/goo-engine"
-          path: goo-engine-build/goo-engine
-      - name: Install initial packages
+          repository: TechnoHT/blender
+          path: C:\blender
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Set up CMake
+        uses: actions/setup-cmake@v2
+
+      - name: Set up Visual Studio
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          toolset: vc142
+
+      - name: Download Blender libraries
         run: |
-          sudo apt update
-          sudo apt install python3 git git-lfs
-      - name: Install basic building environment
-        run: |
-          cd goo-engine-build/goo-engine
-          ./build_files/build_environment/install_linux_packages.py
-      - name: Download libraries
-        run: |
-          cd goo-engine-build/goo-engine
-          ./build_files/utils/make_update.py --use-linux-libraries
-      - name: Build Blender
-        run: |
-          cd goo-engine-build/goo-engine
+          cd C:\blender\blender
           make update
+
+      - name: Compile Blender
+        run: |
+          cd C:\blender\blender
           make
-      - name: Compress Blender for the artifacts
+
+      - name: Compress Blender build output
         run: |
-          mkdir release
-          cp -r goo-engine-build/build_win/bin release/blender
-          cd release
-          tar Jcf blender.tar.xz blender
-          rm -rf blender
-      - name: Create MD5 checksum file
-        run: |
-          cd release
-          md5sum blender.tar.xz > blender.tar.xz.md5
-      - name: Upload artifact 
-        uses: actions/upload-artifact@v3
+          Compress-Archive -Path C:\blender\build_windows_Full_x64_vc17_Release\bin -DestinationPath blender_build.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
         with:
-          name: blender
-          path: "release"
+          name: blender-build
+          path: blender_build.zip
