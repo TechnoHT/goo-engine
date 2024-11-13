@@ -1,5 +1,4 @@
-name: Blender daily build
-
+name: build
 on:
   workflow_dispatch:
   schedule:
@@ -15,41 +14,50 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout Blender source
+      - name: Checkout Engine source
         uses: actions/checkout@v4
         with:
           repository: TechnoHT/goo-engine
           path: blender
           submodules: recursive
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: Set up CMake
+      - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v2.0.2
 
-      - name: Set up Visual Studio
+      - name: Setup Visual Studio
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x64
 
-      - name: Download Blender libraries
+      - name: Download external libraries
         run: |
           cd blender
           python ./build_files/utils/make_update.py
         shell: cmd
         
-      - name: Compile Blender
+      - name: Compile
         env:
           BLENDER_USE_PRECOMPILED_LIBS: "ON"
         run: |
           cd blender
           make
         shell: cmd
+        continue-on-error: true
+
+      - name: Display Build Log on Failure
+        if: failure()
+        run: |
+          type blender\..\build_windows_x64_vc17_Release\Build.log
+        shell: cmd
+          
 
       - name: Compress Blender build output
+        if: success()
         run: |
           Compress-Archive -Path \build_windows_Full_x64_vc17_Release\bin -DestinationPath blender_build.zip
 
