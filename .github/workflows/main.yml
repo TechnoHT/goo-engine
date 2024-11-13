@@ -38,11 +38,12 @@ jobs:
         run: |
           cd blender
           make update
-
+      - shell: cmd
       - name: Compile Blender
         run: |
           cd blender
           make
+      - shell: cmd
 
       - name: Compress Blender build output
         run: |
