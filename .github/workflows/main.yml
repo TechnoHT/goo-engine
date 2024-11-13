@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: TechnoHT/goo-engine
-          path: C:\blender
+          path: blender
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -37,17 +37,17 @@ jobs:
 
       - name: Download Blender libraries
         run: |
-          cd C:\blender\blender
+          cd blender\blender
           make update
 
       - name: Compile Blender
         run: |
-          cd C:\blender\blender
+          cd blender\blender
           make
 
       - name: Compress Blender build output
         run: |
-          Compress-Archive -Path C:\blender\build_windows_Full_x64_vc17_Release\bin -DestinationPath blender_build.zip
+          Compress-Archive -Path blender\build_windows_Full_x64_vc17_Release\bin -DestinationPath blender_build.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
