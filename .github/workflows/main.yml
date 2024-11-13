@@ -1,0 +1,55 @@
+name: Blender daily build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+  push:
+    branches:
+      - main
+      - 'run-ci/**'
+  pull_request:
+
+jobs:
+  build_blender:
+    name: Build Blender
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Blender sources from GitHub
+        uses: actions/checkout@v2
+        with:
+          repository: "TechnoHT/goo-engine"
+          path: goo-engine-build/goo-engine
+      - name: Install initial packages
+        run: |
+          sudo apt update
+          sudo apt install python3 git git-lfs
+      - name: Install basic building environment
+        run: |
+          cd goo-engine-build/goo-engine
+          ./build_files/build_environment/install_linux_packages.py
+      - name: Download libraries
+        run: |
+          cd goo-engine-build/goo-engine
+          ./build_files/utils/make_update.py --use-linux-libraries
+      - name: Build Blender
+        run: |
+          cd goo-engine-build/goo-engine
+          make update
+          make
+      - name: Compress Blender for the artifacts
+        run: |
+          mkdir release
+          cp -r goo-engine-build/build_win/bin release/blender
+          cd release
+          tar Jcf blender.tar.xz blender
+          rm -rf blender
+      - name: Create MD5 checksum file
+        run: |
+          cd release
+          md5sum blender.tar.xz > blender.tar.xz.md5
+      - name: Upload artifact 
+        uses: actions/upload-artifact@v3
+        with:
+          name: blender
+          path: "release"
