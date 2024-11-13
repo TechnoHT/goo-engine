@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Blender source
         uses: actions/checkout@v4
         with:
-          repository: TechnoHT/blender
+          repository: TechnoHT/goo-engine
           path: C:\blender
 
       - name: Set up Python
