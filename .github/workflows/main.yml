@@ -37,10 +37,12 @@ jobs:
       - name: Download Blender libraries
         run: |
           cd blender
-          make update
+          echo y | make update
         shell: cmd
         
       - name: Compile Blender
+        env:
+          BLENDER_USE_PRECOMPILED_LIBS: "ON"
         run: |
           cd blender
           make
