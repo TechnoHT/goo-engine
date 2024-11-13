@@ -30,10 +30,9 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v2.0.2
 
       - name: Set up Visual Studio
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x64
-          toolset: vc142
 
       - name: Download Blender libraries
         run: |
