@@ -31,7 +31,7 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x64
-          toolset: 16.0
+          toolset: 16.11
 
       - name: Download external libraries
         run: |
@@ -50,7 +50,7 @@ jobs:
 
       - name: Display Build Log on Failure
         run: |
-          type blender\..\build_windows_x64_vc17_Release\Build.log
+          type blender\..\build_windows_x64_vc16_Release\Build.log
         shell: cmd
           
 
