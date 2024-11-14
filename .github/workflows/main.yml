@@ -48,14 +48,12 @@ jobs:
         continue-on-error: true
 
       - name: Display Build Log on Failure
-        if: failure()
         run: |
           type blender\..\build_windows_x64_vc17_Release\Build.log
         shell: cmd
           
 
       - name: Compress Blender build output
-        if: success()
         run: |
           Compress-Archive -Path blender\..\build_windows_Full_x64_vc17_Release -DestinationPath blender_build.zip
 
