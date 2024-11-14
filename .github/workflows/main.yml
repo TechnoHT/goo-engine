@@ -1,0 +1,66 @@
+name: build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'run-ci/**'
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Engine source
+        uses: actions/checkout@v4
+        with:
+          repository: TechnoHT/goo-engine
+          path: blender
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2.0.2
+
+      - name: Setup Visual Studio
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x64
+
+      - name: Download external libraries
+        run: |
+          cd blender
+          python ./build_files/utils/make_update.py
+        shell: cmd
+        
+      - name: Compile
+        env:
+          BLENDER_USE_PRECOMPILED_LIBS: "ON"
+        run: |
+          cd blender
+          make
+        shell: cmd
+        continue-on-error: true
+
+      - name: Display Build Log on Failure
+        if: failure()
+        run: |
+          type blender\..\build_windows_x64_vc17_Release\Build.log
+        shell: cmd
+          
+
+      - name: Compress Blender build output
+        if: success()
+        run: |
+          Compress-Archive -Path blender\..\build_windows_Full_x64_vc17_Release -DestinationPath blender_build.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-build
+          path: blender_build.zip
