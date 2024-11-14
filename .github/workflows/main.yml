@@ -31,6 +31,7 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x64
+          toolset: 16.0
 
       - name: Download external libraries
         run: |
@@ -53,9 +54,9 @@ jobs:
         shell: cmd
           
 
-      - name: Compress Blender build output
+      - name: Compress build output
         run: |
-          Compress-Archive -Path blender\..\build_windows_Full_x64_vc17_Release -DestinationPath blender_build.zip
+          Compress-Archive -Path blender\..\build_windows_Full_x64_vc16_Release -DestinationPath blender_build.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
