@@ -51,7 +51,14 @@ jobs:
         run: |
           type blender\..\build_windows_x64_vc17_Release\Build.log
         shell: cmd
-          
+
+      - name: Cache build environment
+        uses: actions/cache@v4
+        env:
+          cache-name: ${{ github.ref }}-${{ runner.os }}
+        with:
+          path: ${{ env._MAIN_DIR }}
+          key: build-cache-${{ env.cache-name }}
 
       - name: Compress build output
         run: |
