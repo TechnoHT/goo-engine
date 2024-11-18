@@ -633,27 +633,28 @@ bool ImageManager::file_load_image(Image *img, int texture_limit)
      * finite. This way we avoid possible artifacts caused by fully changed
      * hue. */
     if (is_rgba) {
-      for (size_t i = 0; i < num_pixels; i += 4) {
-        StorageType *pixel = &pixels[i * 4];
-        if (!isfinite(pixel[0]) || !isfinite(pixel[1]) || !isfinite(pixel[2]) ||
-            !isfinite(pixel[3]))
-        {
-          pixel[0] = 0;
-          pixel[1] = 0;
-          pixel[2] = 0;
-          pixel[3] = 0;
+        for (size_t i = 0; i < num_pixels; i += 4) {
+            StorageType *pixel = &pixels[i * 4];
+            if (!isFinite::isfinite(pixel[0]) || !isFinite::isfinite(pixel[1]) ||
+                !isFinite::isfinite(pixel[2]) || !isFinite::isfinite(pixel[3]))
+            {
+                pixel[0] = 0;
+                pixel[1] = 0;
+                pixel[2] = 0;
+                pixel[3] = 0;
+            }
         }
-      }
     }
     else {
-      for (size_t i = 0; i < num_pixels; ++i) {
-        StorageType *pixel = &pixels[i];
-        if (!isfinite(pixel[0])) {
-          pixel[0] = 0;
+        for (size_t i = 0; i < num_pixels; ++i) {
+            StorageType *pixel = &pixels[i];
+            if (!isFinite::isfinite(pixel[0])) {
+                pixel[0] = 0;
+            }
         }
-      }
     }
-  }
+}
+
 
   /* Scale image down if needed. */
   if (pixels_storage.size() > 0) {
