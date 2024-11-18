@@ -635,8 +635,8 @@ bool ImageManager::file_load_image(Image *img, int texture_limit)
     if (is_rgba) {
         for (size_t i = 0; i < num_pixels; i += 4) {
             StorageType *pixel = &pixels[i * 4];
-            if (!isFinite::isfinite(pixel[0]) || !isFinite::isfinite(pixel[1]) ||
-                !isFinite::isfinite(pixel[2]) || !isFinite::isfinite(pixel[3]))
+            if (!isfinite(pixel[0]) || !isfinite(pixel[1]) ||
+                !isfinite(pixel[2]) || !isfinite(pixel[3]))
             {
                 pixel[0] = 0;
                 pixel[1] = 0;
